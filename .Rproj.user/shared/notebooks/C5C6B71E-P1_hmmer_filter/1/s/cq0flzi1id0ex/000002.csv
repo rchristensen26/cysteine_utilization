@@ -1,0 +1,16 @@
+"0","filter_factor = 0.5"
+"0","filter_factor2 = 0.75"
+"0",""
+"0","# score distribution for mutase and epimerase"
+"0","ggplot(subset(maxHitScoreDF_P1, pHMM %in% c(""methylmalonyl-CoA-epimerase-EC5-1-99-1"", ""methylmalonyl-CoA-mutase-EC5-4-99-2"")), aes(x = hit_score)) +"
+"0","  geom_histogram(binwidth = 10) +"
+"0","  facet_wrap(vars(pHMM)) +"
+"0","  "
+"0","  geom_vline(data=filter(maxHitScoreDF_P1, pHMM == ""methylmalonyl-CoA-epimerase-EC5-1-99-1""), aes(xintercept = epimerase_min_score *filter_factor), color = ""red"") +"
+"0","  geom_vline(data=filter(maxHitScoreDF_P1, pHMM == ""methylmalonyl-CoA-mutase-EC5-4-99-2""), aes(xintercept = mutase_min_score *filter_factor), color = ""red"") +"
+"0","  "
+"0","  geom_vline(data=filter(maxHitScoreDF_P1, pHMM == ""methylmalonyl-CoA-epimerase-EC5-1-99-1""), aes(xintercept = epimerase_min_score *filter_factor2), color = ""blue"") +"
+"0","  geom_vline(data=filter(maxHitScoreDF_P1, pHMM == ""methylmalonyl-CoA-mutase-EC5-4-99-2""), aes(xintercept = mutase_min_score *filter_factor2), color = ""blue"")"
+"2","Error in subset(maxHitScoreDF_P1, pHMM %in% c(""methylmalonyl-CoA-epimerase-EC5-1-99-1"",  : 
+  object 'maxHitScoreDF_P1' not found
+"

@@ -1,0 +1,39 @@
+---
+title: "rootTree"
+output: html_document
+---
+
+```{r}
+# library(ape)
+
+# tree_file = "/Users/rebeccachristensen/Desktop/Cremer_Lab_2022/main/workflow/out/raxmlOutputFinal/RAxML_labelledTree_noBootstrap.newick"
+# rooted_tree_file = "/Users/rebeccachristensen/Desktop/Cremer_Lab_2022/main/workflow/out/raxmlOutputFinal/RAxML_labelledTree_noBootstrap_rooted.newick"
+
+# tree = read.tree(tree_file)
+
+# is.rooted(tree)  # check that tree is unrooted
+ 
+
+outgroup <- c("Pyrobaculum_aerophilum_str._IM2_copy_1__PrbAero3", 
+          "Pyrobaculum_aerophilum_str._IM2_copy_2__PrbAero4",
+          "Pyrobaculum_islandicum__PrbIslan",
+          "Pyrobaculum_arsenaticum_copy_1__PrbArse3",
+          "Pyrobaculum_arsenaticum_copy_2__PrbArse4",
+          "Pyrobaculum_arsenaticum_copy_3__PrbArse5",
+          "Pyrobaculum_calidifontis_copy_1__PrbCali3",
+          "Pyrobaculum_calidifontis_copy_2__PrbCali4",
+          "Caldivirga_maquilingensis__CvgMaqu3",
+          "Pyrobaculum_oguniense_copy_3__PyrOgun5",
+          "Pyrobaculum_oguniense_copy_1__PyrOgun6",
+          "Pyrobaculum_oguniense_copy_2__PyrOgun7",
+          "Pyrobaculum_neutrophilum__TptNeut2",
+          "Pyrobaculum_sp._1860__CP003098",
+          "Microbial_hot_spring_community__entry547",
+          "Vulcanisaeta_distributa_IC-017T__CP002100",
+          "Vulcanisaeta_moutnovskia_768-28__CP002529") 
+
+rooted_tree <- root(tree,outgroup = outgroup, resolve.root = TRUE)
+
+write.tree(rooted_tree, file = rooted_tree_file)
+```
+

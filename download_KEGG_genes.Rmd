@@ -1,0 +1,70 @@
+---
+title: "download_KEGG_genes"
+output: html_document
+---
+
+# retrieve list of genes for KEGG entry for tnaA
+# KEGG number: K01667
+```{r}
+library(KEGGREST)
+
+# tnaA_geneList <- keggFind("genes", "K01667")
+# tnaA_sequences <- c()
+# tnaA_names <- c()
+# 
+# for (geneID in names(tnaA_geneList)) {
+#   tnaA_names <- append(tnaA_names, as.character(keggGet(geneID)[[1]]$ENTRY))
+#   tnaA_sequences <- append(tnaA_sequences, as.character(keggGet(geneID)[[1]]$AASEQ))
+# }
+# 
+# tnaA_gene_df <- data.frame(tnaA_names, tnaA_sequences)
+
+
+# tnaA_mgeneList <- keggFind("mgenes", "K01667")
+# 
+# tnaA_mgene_sequences <- c()
+# tnaA_mgene_names <- c()
+# 
+# for (geneID in names(tnaA_mgeneList)) {
+#   if (!is.null(keggGet(geneID)[[1]]$AASEQ)) {
+#     tnaA_mgene_names <- append(tnaA_mgene_names, as.character(keggGet(geneID)[[1]]$ENTRY))
+#     tnaA_mgene_sequences <- append(tnaA_mgene_sequences, as.character(keggGet(geneID)[[1]]$AASEQ))
+#   }
+# }
+# 
+# tnaA_mgene_df <- data.frame(tnaA_mgene_names, tnaA_mgene_sequences)
+```
+
+# metC = K01760
+# malY = K14155
+# cysK = 	K01738
+# cysM = K12339 ; 1862 genes in KEGG db
+# lcd = K22207
+```{r}
+library(KEGGREST)
+library(seqinr)
+
+geneList <- keggFind("genes", "K22207")
+sequences <- c()
+names <- c()
+
+for (geneID in names(geneList)) {
+  names <- append(names, as.character(keggGet(geneID)[[1]]$ENTRY))
+  sequences <- append(sequences, as.character(keggGet(geneID)[[1]]$AASEQ))
+}
+
+gene_df <- data.frame(names, sequences)
+
+# write.fasta(sequences = as.list(sequences), names = names, file.out = "lcd_K22207_genes.faa")
+
+```
+
+
+```{r}
+library(seqinr)
+
+# write.fasta(sequences = as.list(tnaA_sequences), names = tnaA_names, file.out = "tnaA_K01677_genes.faa")
+write.fasta(sequences = as.list(tnaA_mgene_sequences), names = tnaA_mgene_names, file.out = "tnaA_K01677_referenceGenes_mgenes.faa")
+
+```
+

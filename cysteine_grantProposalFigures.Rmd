@@ -1,0 +1,61 @@
+---
+title: "cysteine_grantProposalFigures"
+output: html_document
+---
+# making figures to send to Jonas for the cysteine project grant proposal
+
+# format df for the figures
+```{r}
+df <- maxHitScoreDF_forGrantFigures
+df$perc_of_ecoli_score <- NA
+df$`Category by Percentage of E. coli Hit Score` <- NA
+
+# iterate by gene to get E. coli score for each gene
+for (gene in unique(df$gene)) {
+  ecoli_score <- subset(df$hit_score, df$strain == "Escherichia_coli" & df$ gene == gene)
+  
+  # iterate by row in df to calcualte percentile `Category by Percentage of E. coli Hit Score` of E. coli score and add to new column in df
+  for (strain in unique(df$strain)) {
+    df$perc_of_ecoli_score <- ifelse(df$strain == strain & df$gene == gene, 
+                                     (df$hit_score / ecoli_score)*100, 
+                                     df$perc_of_ecoli_score)
+  }
+  for (strain in unique(df$strain)) {
+    df$`Category by Percentage of E. coli Hit Score` <- ifelse(df$strain == strain & df$gene == gene & df$perc_of_ecoli_score <50, 
+                          "<50%",
+                          ifelse(df$strain == strain & df$gene == gene & 
+                                   df$perc_of_ecoli_score  >= 50 & df$perc_of_ecoli_score <= 75,
+                          "50-75%",
+                           ifelse(df$strain == strain & df$gene == gene & 
+                                   df$perc_of_ecoli_score  > 75,
+                          ">75%", 
+                          df$`Category by Percentage of E. coli Hit Score`)))
+  }
+}
+
+# lcd is NA bc I dont have a model organism hit score for it yet
+# df$perc_of_ecoli_score[df$gene == "lcd"] <- NA
+# df$`Category by Percentage of E. coli Hit Score`[df$gene == "lcd"] <- NA
+
+# reorder the levels of the `Category by Percentage of E. coli Hit Score` variable
+df$`Category by Percentage of E. coli Hit Score` <- factor(df$`Category by Percentage of E. coli Hit Score`, c("<50%", "50-75%", ">75%"))
+
+df$gene <- factor(df$gene, c("cysK", "malY", "metC", "cysM", "tnaA", "lcd"))
+
+# done!
+```
+
+# make the figures!
+```{r}
+plot <- ggplot(df, aes(x = gene, fill = `Category by Percentage of E. coli Hit Score`)) +
+  geom_bar() +
+  ggtitle("Number of Strains with Hits for Cysteine-Utilization Genes") +
+  ylab("number of strains") +
+  labs(fill="Category by Percentage\nof E. coli Hit Score") +
+  theme(legend.title=element_text(size=8), legend.key.height=unit(1.5, "cm"))
+
+plot
+
+# ggsave(file = "NumberOfHitsPerGene.pdf", plot = plot, device = "pdf", width = 7, height = 5)
+```
+

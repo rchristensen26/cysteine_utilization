@@ -1,0 +1,173 @@
+---
+title: "strain_list_for_experiments"
+output: html_document
+---
+
+# make a list of strains with predicted CD activity from Forster 2019 list of prevalent gut strains (from Supp. Table 5)
+# strain list from Forster = "Forster_2019_SuppTable5_gutSpecies.xlsx"
+# strain list that I HMMER searched = strain_list.txt
+# cysteine HMMER search results = "cysteine_strains_geneHitScoreCategories_withLCD.xlsx"
+
+# strains for cysteine experiments
+```{r}
+library(stringi)
+
+# reformat strain names in strain_list and cysteine_score_filtered_wide df to replace hyphens and underscores with whitespace
+# new column for species name
+
+for (n_row in (1:nrow(cysteine_score_filtered_wide))) {
+  if (grepl("-sp-", cysteine_score_filtered_wide[n_row, "strain"]) == TRUE) {
+    cysteine_score_filtered_wide[n_row, "species"] <- paste(stri_split_regex(cysteine_score_filtered_wide[n_row, "strain"], "-sp-")[[1]][1], "species")
+
+  }
+  else {
+    cysteine_score_filtered_wide[n_row, "species"] <- stri_replace_all_regex(cysteine_score_filtered_wide[n_row, "strain"],
+                                                                 pattern = c("_"),
+                                                                 replacement = c(" "))
+    cysteine_score_filtered_wide[n_row, "species"] <- stri_replace_all_regex(cysteine_score_filtered_wide[n_row, "species"],
+                                                                 pattern = c("-"),
+                                                                 replacement = c(" "))
+    cysteine_score_filtered_wide[n_row, "species"] <- sub("^(\\S*\\s+\\S+).*", "\\1", cysteine_score_filtered_wide[n_row, "species"])
+  }
+}
+
+for (n_row in (1:nrow(strain_list))) {
+  if (grepl("-sp-", strain_list[n_row, "X1"]) == TRUE) {
+    strain_list[n_row, "species"] <- paste(stri_split_regex(strain_list[n_row, "X1"], "-sp-")[[1]][1], "species")
+  }
+  else {
+    strain_list[n_row, "species"] <- stri_replace_all_regex(strain_list[n_row, "X1"], 
+                                                                 pattern = c("_"),
+                                                                 replacement = c(" "))
+    strain_list[n_row, "species"] <- stri_replace_all_regex(strain_list[n_row, "species"], 
+                                                                 pattern = c("-"),
+                                                                 replacement = c(" "))
+    strain_list[n_row, "species"] <- sub("^(\\S*\\s+\\S+).*", "\\1", strain_list[n_row, "species"])
+  }
+}
+
+# excellent excellent ....
+
+```
+
+```{r}
+# HMMER_searched_species <- strain_list$species
+
+
+Forster_species <- Forster_gutSpecies$`Species Name`
+
+Forster_gutSpecies_cysteine <- Forster_gutSpecies
+
+cd_expected_species <- cysteine_score_filtered_wide$species
+
+# genes <- colnames(cysteine_score_filtered_wide[,2:7])
+# for (gene in genes){
+#   Forster_gutSpecies[,gene] <- NA
+# }
+
+for (n_row in 1:nrow(Forster_gutSpecies_cysteine)) {
+  species <- Forster_gutSpecies_cysteine[n_row, "Species Name"]
+   if (species %in% cd_expected_species) {
+      Forster_gutSpecies_cysteine[n_row, "predicted_cd_activity"] <- "cd expected"
+      
+      # for (agene in genes){
+      #   if (!is.na(cysteine_score_filtered_wide[cysteine_score_filtered_wide$species == as.character(species), agene])){
+      #     Forster_gutSpecies[n_row, agene] <- "pos"
+      #   }
+    # }
+  }
+}
+
+```
+
+# species for from propionate results
+```{r}
+
+library(stringi)
+
+# make new species column in propionate_results
+
+for (n_row in (1:nrow(propionate_results))) {
+  if (grepl("-sp-", propionate_results[n_row, "strain"]) == TRUE) {
+    propionate_results[n_row, "species"] <- paste(stri_split_regex(propionate_results[n_row, "strain"], "-sp-")[[1]][1], "species")
+
+  }
+  else {
+    propionate_results[n_row, "species"] <- stri_replace_all_regex(propionate_results[n_row, "strain"],
+                                                                 pattern = c("_"),
+                                                                 replacement = c(" "))
+    propionate_results[n_row, "species"] <- stri_replace_all_regex(propionate_results[n_row, "species"],
+                                                                 pattern = c("-"),
+                                                                 replacement = c(" "))
+    propionate_results[n_row, "species"] <- sub("^(\\S*\\s+\\S+).*", "\\1", propionate_results[n_row, "species"])
+  }
+}
+
+```
+
+# species from Forster gut species with expected propionate production
+```{r}
+Forster_gutSpecies_propionate <- Forster_gutSpecies
+
+HMMER_searched_species <- strain_list$species
+Forster_species <- Forster_gutSpecies_propionate$`Species Name`
+prop_expected_species <- unique(propionate_results$species)
+  
+Forster_gutSpecies_propionate$pathway <- NA
+
+for (n_row in 1:nrow(Forster_gutSpecies_propionate)) {
+  # check if species was HMMER searched
+  species <- Forster_gutSpecies_propionate[n_row, "Species Name"]
+  
+  if (!species %in% HMMER_searched_species) {
+    Forster_gutSpecies_propionate[n_row, "predicted_propionate_production"] <- "not searched"
+  }
+  else {
+    if (species %in% prop_expected_species) {
+      Forster_gutSpecies_propionate[n_row, "predicted_propionate_production"] <- "propionate production expected"
+      
+      pathway <- propionate_results$pathway[propionate_results$species == as.character(species)][1]
+      Forster_gutSpecies_propionate[n_row, "pathway"] <- pathway
+    }
+    
+    if (!species %in% prop_expected_species) {
+      Forster_gutSpecies_propionate[n_row, "predicted_propionate_production"] <- "propionate production NOT expected"
+    }
+  }
+}
+
+```
+
+
+# join cysteine and propionate species lists
+```{r}
+
+Forster_gutSpecies_cysteine_propionate <- merge(Forster_gutSpecies_cysteine, Forster_gutSpecies_propionate, by = c("Species Name", "NCBI Taxon ID"))
+
+```
+
+# get list of unsearched strains so I can rerun the cysteine and propionate pipelines on them
+```{r}
+library(readr)
+
+Forster_gutSpecies_cysteine_propionate$strain_name <- gsub(" ", "_", Forster_gutSpecies_cysteine_propionate$`Species Name`)
+
+unsearched_strains <- subset(Forster_gutSpecies_cysteine_propionate$strain_name, (Forster_gutSpecies_cysteine_propionate$predicted_cd_activity == "not searched"))
+
+
+write_lines(unsearched_strains, file = "unsearched_strains_08082022.txt", sep = "\n")
+                      
+```
+
+# merge cysteine and propionate results
+```{r}
+cysteine_score_filtered_wide$cysteine_expected <- "yes"
+propionate_results$propionate_expected <- "yes"
+cysteine_and_propionate_results <- merge(cysteine_score_filtered_wide, propionate_results, by = c("species", "strain"), all= TRUE)
+
+cysteine_and_propionate_results_ForsterSpecies <- subset(cysteine_and_propionate_results, cysteine_and_propionate_results$species %in% Forster_gutSpecies$`Species Name`)
+# View(cysteine_and_propionate_results)
+
+write.csv(cysteine_and_propionate_results, "cysteine_and_propionate_results.csv")
+write.csv(cysteine_and_propionate_results_ForsterSpecies, "cysteine_and_propionate_results_ForsterSpeices.csv")
+```

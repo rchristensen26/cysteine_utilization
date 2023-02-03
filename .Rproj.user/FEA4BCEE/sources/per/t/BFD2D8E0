@@ -1,0 +1,33 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1665448166872.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "BFD2D8E0",
+    "lastKnownWriteTime" : 4379963644,
+    "last_content_update" : 1665448166872,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "cacheKey" : "2A489109",
+        "caption" : "subset(merged_pathways_df_afterFiltering$strain, merged_pathways_df_afterFiltering$pathway == ",
+        "contentUrl" : "grid_resource/gridviewer.html?env=_rs_no_env&obj=&cache_key=2A489109",
+        "displayedObservations" : "91",
+        "environment" : "_rs_no_env",
+        "expression" : "subset(merged_pathways_df_afterFiltering$strain, merged_pathways_df_afterFiltering$pathway ==      \"sodium-pumping decarboxylase\")",
+        "object" : "",
+        "preview" : "0",
+        "totalObservations" : "91",
+        "variables" : "1"
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 6,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_dataframe"
+}

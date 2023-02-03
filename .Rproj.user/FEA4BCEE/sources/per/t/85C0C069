@@ -1,0 +1,33 @@
+{
+    "collab_server" : "",
+    "contents" : "",
+    "created" : 1659733382275.000,
+    "dirty" : false,
+    "encoding" : "",
+    "folds" : "",
+    "hash" : "0",
+    "id" : "85C0C069",
+    "lastKnownWriteTime" : 8386658456067588884,
+    "last_content_update" : 1659733382275,
+    "path" : null,
+    "project_path" : null,
+    "properties" : {
+        "cacheKey" : "435D6F2E",
+        "caption" : "Forster_gutSpecies_propionate",
+        "contentUrl" : "grid_resource/gridviewer.html?env=&obj=Forster_gutSpecies_propionate&cache_key=435D6F2E",
+        "displayedObservations" : 165,
+        "environment" : "",
+        "expression" : "Forster_gutSpecies_propionate",
+        "object" : "Forster_gutSpecies_propionate",
+        "preview" : 0,
+        "totalObservations" : 165,
+        "variables" : 2
+    },
+    "read_only" : false,
+    "read_only_alternatives" : [
+    ],
+    "relative_order" : 4,
+    "source_on_save" : false,
+    "source_window" : "",
+    "type" : "r_dataframe"
+}

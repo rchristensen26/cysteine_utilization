@@ -1,0 +1,7 @@
+"0",""
+"0","ggplot(subset(df, `Category by Percentage of E. coli Hit Score` == "">75%""), aes(y = reorder(strain, phylum), x = gene, fill = hit_score)) +"
+"0","  geom_tile() +"
+"0","  theme_classic() +"
+"0","  theme(axis.text.y = element_text(colour = phylum_colors, size = 3))"
+"2","Vectorized input to `element_text()` is not officially supported.
+Results may be unexpected or may change in future versions of ggplot2."

@@ -1,0 +1,20 @@
+"0","  "
+"0","ggplot(maxHSPScoreDF, aes(x = hsp_score, fill = gene)) +"
+"0","  geom_histogram(position=""identity"", color = ""black"") +"
+"0","  facet_wrap(~gene) +"
+"0","  ggtitle(""Distribution of HSP Scores for HMMER Results, by profile HMM "") +"
+"0","  theme(legend.position=""none"")"
+"1","[1m[33mError[39m in [38;5;232m`combine_vars()`[39m:[22m
+[33m![39m At least one layer must contain all faceting variables: `gene`.
+* Plot is missing `gene`
+* Layer 1 is missing `gene`
+Backtrace:
+[90m  1. [39m[1mbase[22m (local) `<fn>`(x)
+[90m  2. [39mggplot2:::print.ggplot(x)
+[90m  4. [39mggplot2:::ggplot_build.ggplot(x)
+[90m  5. [39mlayout$setup(data, plot$data, plot$plot_env)
+[90m  6. [39mggplot2 (local) f(..., self = self)
+[90m  7. [39mself$facet$compute_layout(data, self$facet_params)
+[90m  8. [39mggplot2 (local) f(...)
+[90m 11. [39m[38;5;232m[1m[94mggplot2::combine_vars([38;5;232m[22m[39mdata, params$plot_env, vars, drop = params$drop[38;5;232m[1m[94m)[38;5;232m[22m[39m
+"

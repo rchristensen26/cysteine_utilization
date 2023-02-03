@@ -1,0 +1,164 @@
+---
+title: "gene strain table"
+output: html_document
+---
+
+```{r}
+library(reshape2)
+
+maxHitScoreDF_cysteine_wide <- dcast(maxHitScoreDF_cysteine, strain~gene)
+View(maxHitScoreDF_cysteine_wide)
+# ok... custom profiles give basically the same result as the profile HMMs from Wolf.
+# next step: check scores and lengths.... just in case the profile HMMs are returning low scores or short sequences.
+
+```
+
+#first, let's take a look at the hit scores for each of the profiles
+```{r}
+library(ggplot2)
+
+# hit scores
+ggplot(maxHitScoreDF_cysteine, aes(x = hit_score, fill = gene)) +
+  geom_histogram(position="identity", color = "black") +
+  facet_wrap(~gene) +
+  ggtitle("Distribution of Hit Scores for HMMER Results, by profile HMM ") +
+  theme(legend.position="none")
+  
+ggplot(maxHSPScoreDF, aes(x = hsp_score, fill = gene)) +
+  geom_histogram(position="identity", color = "black") +
+  facet_wrap(~gene) +
+  ggtitle("Distribution of HSP Scores for HMMER Results, by profile HMM ") +
+  theme(legend.position="none")
+
+ggplot(maxHSPLen, aes(x = hsp_len, fill = gene)) +
+  geom_histogram(position="identity", color = "black") +
+  facet_wrap(~gene) +
+  ggtitle("Distribution of HSP Lengths for HMMER Results, by profile HMM ") +
+  theme(legend.position="none")
+
+# PROFILE LENGTHS (all custom)
+"
+lcd = 523
+metC = 479
+malY = 493
+cysK = 462
+cysM = 366
+tnaA = 839
+"
+
+```
+
+# let's look at boxplot version of the distribution
+```{r}
+library(ggplot2)
+
+# hit scores
+ggplot(maxHitScoreDF_cysteine, aes(x = hit_score, fill = gene)) +
+  geom_boxplot(position="identity", color = "black") +
+  facet_wrap(~gene) +
+  ggtitle("Distribution of Hit Scores for HMMER Results, by profile HMM ") +
+  theme(legend.position="none")
+  
+ggplot(maxHSPScoreDF, aes(x = hsp_score, fill = gene)) +
+  geom_boxplot(position="identity", color = "black") +
+  facet_wrap(~gene) +
+  ggtitle("Distribution of HSP Scores for HMMER Results, by profile HMM ") +
+  theme(legend.position="none")
+
+ggplot(maxHSPLen, aes(x = hsp_len, fill = gene)) +
+  geom_boxplot(position="identity", color = "black") +
+  facet_wrap(~gene) +
+  ggtitle("Distribution of HSP Lengths for HMMER Results, by profile HMM ") +
+  theme(legend.position="none")
+
+```
+
+# score filter based on lowest scoring model cysteine-degrader
+```{r}
+library(dplyr)
+
+model_metc <- c("Escherichia_coli")
+model_cysk <- c("Escherichia_coli")
+model_cysm <- c("Escherichia_coli")
+model_tnaa <- c("Escherichia_coli")
+
+model_cdb_df <- (subset(maxHitScoreDF_cysteine, 
+                       grepl(model_cdb[1], strain) | 
+                          grepl(model_cdb[2], strain) |
+                         grepl(model_cdb[3], strain) |
+                         grepl(model_cdb[4], strain)
+                       == TRUE))
+
+slice(subset(model_cdb_df, model_cdb_df$gene == "cysKcustom"), which.min(hit_score))
+
+slice(subset(model_cdb_df, model_cdb_df$gene == "cysMcustom"), which.min(hit_score))
+
+slice(subset(model_cdb_df, model_cdb_df$gene == "lcdcustom"), which.min(hit_score))
+
+slice(subset(model_cdb_df, model_cdb_df$gene == "malYcustom"), which.min(hit_score))
+
+slice(subset(model_cdb_df, model_cdb_df$gene == "metCcustom"), which.min(hit_score))
+
+slice(subset(model_cdb_df, model_cdb_df$gene == "tnaA"), which.min(hit_score))
+
+cysK_min_score = 515.6
+cysM_min_score = 546
+lcd_min_score = 116.8
+malY_min_score = 531.1
+metC_min_score = 563.3
+tnaA_min_score = 933.6
+
+```
+
+# filtering by max hit 
+
+```{r}
+cysK_min_score = max(maxHitScoreDF_cysteine_wide$cysKcustom, na.rm = TRUE)
+cysM_min_score = max(maxHitScoreDF_cysteine_wide$cysMcustom, na.rm = TRUE)
+lcd_min_score = max(maxHitScoreDF_cysteine_wide$lcdcustom, na.rm = TRUE)
+malY_min_score = max(maxHitScoreDF_cysteine_wide$malYcustom, na.rm = TRUE)
+metC_min_score = max(maxHitScoreDF_cysteine_wide$metCcustom, na.rm = TRUE)
+tnaA_min_score = max(maxHitScoreDF_cysteine_wide$tnaA, na.rm = TRUE)
+
+```
+
+# subset df for score filter
+```{r}
+filter_factor = 0.75
+
+ cysteine_score_filtered_df <- as.data.frame(maxHitScoreDF_cysteine) %>%
+  filter((gene == "cysKcustom" & hit_score >=  cysK_min_score * filter_factor) |
+           (gene == "cysMcustom" & hit_score >=  cysM_min_score * filter_factor) | 
+           (gene == "lcdcustom" & hit_score >=  lcd_min_score * filter_factor) |
+           (gene == "metCcustom" & hit_score >=  metC_min_score * filter_factor) |
+           (gene == "malYcustom" & hit_score >=  malY_min_score * filter_factor) |
+           (gene == "tnaA" & hit_score >=  tnaA_min_score * filter_factor))
+
+# reshape filtered_df from long to wide by gene (gene)
+
+cysteine_score_filtered_wide <- reshape(cysteine_score_filtered_df, timevar = "gene", direction = "wide", idvar = "strain")
+
+```
+
+# find model organisms for each gene
+```{r}
+gene_dict <- Dict$new("metC" = "K01760",
+                      "malY" = "K14155",
+                      "cysK" = 	"K01738",
+                      "cysM" = "K12339",
+                      "lcd" = "K22207")
+
+gene <- "malY"
+
+KO_ID <- gene_dict$get(gene)
+geneList <- keggFind("genes", KO_ID)
+
+organisms <- c()
+
+for (geneID in names(geneList)) {
+  organisms <- append(organisms, as.character(keggGet(geneID)[[1]]$ORGANISM))
+}
+
+View(organisms)
+
+```

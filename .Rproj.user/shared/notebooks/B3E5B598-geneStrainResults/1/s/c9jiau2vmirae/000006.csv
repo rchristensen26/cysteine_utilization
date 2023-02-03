@@ -1,0 +1,6 @@
+"0",""
+"0","ggplot(maxHSPLen, aes(x = hsp_len, fill = pHMM)) +"
+"0","  geom_histogram(position=""identity"", color = ""black"") +"
+"0","  facet_wrap(~pHMM) +"
+"0","  ggtitle(""Distribution of HSP Lengths for HMMER Results, by profile HMM "") +"
+"0","  theme(legend.position=""none"")"

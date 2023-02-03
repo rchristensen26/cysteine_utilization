@@ -1,0 +1,7 @@
+"0","# taxa_hits_df <- subset(subset(df, `Category by Percentage of E. coli Hit Score` == "">75%""))"
+"0","# taxa_hits_df <- subset(df, select = -c(gene, hit_score, perc_of_ecoli_score, category, `Category by Percentage of E. coli Hit Score`)) %>% distinct(strain, .keep_all = TRUE)"
+"0"," "
+"0","ggplot(subset(df, `Category by Percentage of E. coli Hit Score` == "">75%""), aes(y = phylum)) +"
+"0","  facet_wrap(vars(gene)) +"
+"0","  geom_bar()"
+"0",""

@@ -1,0 +1,7 @@
+"0","cysK_min_score = max(maxHitScoreDF_cysteine_wide$cysKcustom, na.rm = TRUE)"
+"0","cysM_min_score = max(maxHitScoreDF_cysteine_wide$cysMcustom, na.rm = TRUE)"
+"0","lcd_min_score = max(maxHitScoreDF_cysteine_wide$lcdcustom, na.rm = TRUE)"
+"0","malY_min_score = max(maxHitScoreDF_cysteine_wide$malYcustom, na.rm = TRUE)"
+"0","metC_min_score = max(maxHitScoreDF_cysteine_wide$metCcustom, na.rm = TRUE)"
+"0","tnaA_min_score = max(maxHitScoreDF_cysteine_wide$tnaA, na.rm = TRUE)"
+"0",""

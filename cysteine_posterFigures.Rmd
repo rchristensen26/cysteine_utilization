@@ -1,0 +1,87 @@
+---
+title: "cysteine_posterFigures"
+output: html_document
+---
+
+# df = scoreFiltereByMaxScore
+
+# number of strains with gene -- barplot
+```{r}
+# library(dplyr)
+# library(ggplot2)
+# library(reshape2)
+# 
+# df <- melt(scoreFilteredByMaxScore_cysteine_results_updatedStrains, id.vars = c("strain"), variable.name = "gene")
+
+# group_by to reorder bars by count
+subset(df, !is.na(df$value)) %>%
+  group_by(gene) %>%
+  summarise(perc = round((n() / 214)*100), digits = 3) %>%
+  
+  ggplot(aes(x = reorder(gene, -perc), y = perc)) +
+    geom_bar(stat = "identity", fill = "darkorange", width = 0.5) +
+    geom_text(stat='identity', aes(label=paste(perc, "%")), vjust = -0.5, size = 4) +
+    ylab("Percentage of Strains") +
+    xlab("Gene") +
+    ggtitle("Percentage of Strains with Hits per Gene") +
+    theme_bw() +
+    theme(axis.text.x = element_text(face = "italic", size = 12), axis.text.y = element_text(size = 12), axis.title = element_text(size = 14)) +
+    scale_y_continuous(expand = c(0, 0), limits = c(0,100))
+
+```
+
+# proportion of each taxon with hits? 
+```{r}
+# taxa_hits_df <- subset(subset(df, `Category by Percentage of E. coli Hit Score` == ">75%"))
+# taxa_hits_df <- subset(df, select = -c(gene, hit_score, perc_of_ecoli_score, category, `Category by Percentage of E. coli Hit Score`)) %>% distinct(strain, .keep_all = TRUE)
+ 
+ggplot(subset(df, `Category by Percentage of E. coli Hit Score` == ">75%"), aes(y = phylum)) +
+  facet_wrap(vars(gene)) +
+  geom_bar()
+
+```
+
+# heatmap (not rly bc it's binary) for strain vs. gene
+```{r}
+library(forcats)
+# 
+# df$phylum_colors <- ifelse(df$phylum == "Firmicutes", "orange",
+#                         ifelse(df$phylum == "Actinobacteria", "blue", 
+#                                ifelse(df$phylum == "Bacteroidetes", "purple",
+#                                       ifelse(df$phylum == "Verrucomicrobia", "red",
+                                             # ifelse(df$phylum == "Proteobacteria", "green", NA)))))
+
+phylum_levels <- c("Firmicutes", "Bacteroidetes", "Actinobacteria", "Proteobacteria", "Verrumicrobia")
+
+df %>%
+  mutate(across(c("phylum", "strain"), factor, levels = phylum_levels))
+
+ggplot(subset(df, `Category by Percentage of E. coli Hit Score` == ">75%"), aes(y = reorder(strain, phylum), x = gene, fill = hit_score)) +
+  geom_tile() +
+  theme_classic() +
+  theme(axis.text.y = element_text(colour = phylum_colors, size = 3))
+
+# ggplot(subset(df, `Category by Percentage of E. coli Hit Score` == ">75%" & phylum == "Firmicutes"), aes(y = strain, x = gene, fill = hit_score)) +
+#   geom_tile() +
+#   theme_classic() +
+#   ggtitle("Firmicutes")
+#   # theme(axis.text.y = element_text(colour = phylum_colors, size = 3))
+# 
+# ggplot(subset(df, `Category by Percentage of E. coli Hit Score` == ">75%" & phylum == "Bacteroidetes"), aes(y = strain, x = gene, fill = hit_score)) +
+#   geom_tile() +
+#   theme_classic() +
+#   ggtitle("Bacteroidetes")
+# 
+# ggplot(subset(df, `Category by Percentage of E. coli Hit Score` == ">75%" & phylum == "Actinobacteria"), aes(y = strain, x = gene, fill = hit_score)) +
+#   geom_tile() +
+#   theme_classic() +
+#   ggtitle("Actinobacteria")
+# 
+# ggplot(subset(df, `Category by Percentage of E. coli Hit Score` == ">75%" & phylum == "Proteobacteria"), aes(y = strain, x = gene, fill = hit_score)) +
+#   geom_tile() +
+#   theme_classic() +
+#   ggtitle("Proteobacteria")
+
+```
+
+

@@ -1,0 +1,23 @@
+Bacteroides cellulosilyticus
+Bacteroides caccae
+Bifidobacterium adolescentis
+Parabacteroides merdae
+Bacteroides dorei
+Enterococcus faecalis
+Bacteroides stercoris
+Enterococcus faecium
+Bifidobacterium breve
+Staphylococcus epidermidis
+Bacteroides salyersiae
+Bacteroides finegoldii
+Streptococcus parasanguinis
+Lactobacillus rhamnosus
+Parabacteroides goldsteinii
+Sutterella wadsworthensis
+Prevotella bivia
+Lactobacillus gasseri
+Prevotella veroralis
+Lactobacillus reuteri
+Porphyromonas uenonis
+Varibaculum cambriense
+NA

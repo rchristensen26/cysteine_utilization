@@ -1,0 +1,8 @@
+"0","library(ggplot2)"
+"0",""
+"0","# hit scores"
+"0","ggplot(maxHitScoreDF_cysteine, aes(x = hit_score, fill = gene)) +"
+"0","  geom_histogram(position=""identity"", color = ""black"") +"
+"0","  facet_wrap(~gene) +"
+"0","  ggtitle(""Distribution of Hit Scores for HMMER Results, by profile HMM "") +"
+"0","  theme(legend.position=""none"")"
